@@ -1,0 +1,69 @@
+﻿@page
+@model SearchModel
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using MovieCrud.Entity;
+@using System.Linq.Expressions;
+@using Models;
+
+@{
+    ViewData["Title"] = "Search Movies";
+}
+
+<h1 class="bg-info text-white">Movies</h1>
+<a asp-page="/Read" asp-route-id="1" class="btn btn-secondary">View all Movies</a>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="@Model.movie.Name"></label>
+        <input type="text" asp-for="@Model.movie.Name" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+
+@if (Model.movieList != null)
+{
+    <h2 class="bg-danger text-white m-2">Result</h2>
+    <table class="table table-sm table-bordered">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Actors</th>
+        </tr>
+        @foreach (Movie m in Model.movieList)
+        {
+            <tr>
+                <td>@m.Id</td>
+                <td>@m.Name</td>
+                <td>@m.Actors</td>
+            </tr>
+        }
+    </table>
+}
+
+@functions{
+    public class SearchModel : PageModel
+    {
+        private readonly IRepository<Movie> repository;
+        public SearchModel(IRepository<Movie> repository)
+        {
+            this.repository = repository;
+        }
+
+        [BindProperty]
+        public Movie movie { get; set; }
+
+        public List<Movie> movieList { get; set; }
+
+        public void OnGet()
+        {
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            Expression<Func<Movie, bool>> filter = m => m.Name == movie.Name;
+            movieList = await repository.ReadAllAsync(filter);
+            return Page();
+        }
+    }
+}
