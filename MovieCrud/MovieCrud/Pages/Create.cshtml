@@ -1,0 +1,56 @@
+﻿@page
+@model CreateModel
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using MovieCrud.Entity;
+@using Models;
+
+@{
+    ViewData["Title"] = "Create a Movie";
+}
+
+<h1 class="bg-info text-white">Create a Movie</h1>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+<form method="post">
+    <div class="form-group">
+        <label asp-for="@Model.movie.Name"></label>
+        <input type="text" asp-for="@Model.movie.Name" class="form-control" />
+        <span asp-validation-for="@Model.movie.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="@Model.movie.Actors"></label>
+        <input type="text" asp-for="@Model.movie.Actors" class="form-control" />
+        <span asp-validation-for="@Model.movie.Actors" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+@functions {
+    public class CreateModel : PageModel
+    {
+        private readonly IRepository<Movie> repository;
+        public CreateModel(IRepository<Movie> repository)
+        {
+            this.repository = repository;
+        }
+
+        [BindProperty]
+        public Movie movie { get; set; }
+
+        public IActionResult OnGet()
+        {
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                await repository.CreateAsync(movie);
+                return RedirectToPage("Read", new { id = 1 });
+            }
+            else
+                return Page();
+        }
+    }
+}

@@ -1,0 +1,64 @@
+﻿@page
+@model UpdateModel
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using MovieCrud.Entity;
+@using Models;
+
+@{
+    ViewData["Title"] = "Update a Movie";
+}
+
+<h1 class="bg-info text-white">Update a Movie</h1>
+<a asp-page="Read" class="btn btn-secondary">View all Movies</a>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="movie.Id"></label>
+        <input type="text" asp-for="movie.Id" readonly class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="movie.Name"></label>
+        <input type="text" asp-for="movie.Name" class="form-control" />
+        <span asp-validation-for="movie.Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="movie.Actors"></label>
+        <input type="text" asp-for="movie.Actors" class="form-control" />
+        <span asp-validation-for="movie.Actors" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+</form>
+
+@functions {
+    public class UpdateModel : PageModel
+    {
+        private readonly IRepository<Movie> repository;
+        public UpdateModel(IRepository<Movie> repository)
+        {
+            this.repository = repository;
+        }
+
+        [BindProperty]
+        public Movie movie { get; set; }
+
+        public async Task<IActionResult> OnGet(int id)
+        {
+            movie = await repository.ReadAsync(id);
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                await repository.UpdateAsync(movie);
+
+                return RedirectToPage("Read", new { id = 1 });
+            }
+            else
+                return Page();
+        }
+    }
+}
