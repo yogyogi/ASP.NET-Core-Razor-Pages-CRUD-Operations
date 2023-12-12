@@ -1,5 +1,5 @@
 # ASP.NET Core Razor Pages : CRUD Operations with Repository Pattern and Entity Framework Core
-In this tutorial we will perform code CRUD Operations with Repository Pattern and EF Core. The respository is Generic and it is much more powerful than non-generic one.
+In this tutorial we will perform code CRUD Operations with Repository Pattern and EF Core. The respository is Generic and it is much more powerful than non-generic one. **Repository is updated to .NET 8.0**
 
 Read the entire article here - https://www.hosting.work/aspnet-core-razor-pages-repository-pattern-ef-core/
 
